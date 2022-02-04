@@ -4,6 +4,7 @@ from typing import Tuple
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow, QLabel
+from PyQt5.QtCore import Qt
 
 from ym.static_maps import show_map, YM_TMP_FILENAME
 
@@ -31,3 +32,17 @@ class Window(QMainWindow):
 
     def closeEvent(self, event):
         os.remove(YM_TMP_FILENAME)
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_PageUp:
+            self.z += 1
+            if self.z != 18:
+                self.update_ym()
+            else:
+                self.z = 17
+        if event.key() == Qt.Key_PageDown:
+            self.z -= 1
+            if self.z != -1:
+                self.update_ym()
+            else:
+                self.z = 0
