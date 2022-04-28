@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# nekstas-site
 from core.constants import MAGIC_DV
 
 
