@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 import os
-from typing import Tuple
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow, QLabel
 from PyQt5.QtCore import Qt
 
+from core.rect import Rect
+from core.vec import Vec
 from ym.static_maps import show_map, YM_TMP_FILENAME
 
 
 class Window(QMainWindow):
     ym_label: QLabel
 
-    lo_la: Tuple[float, float]
-    z: int
+    bbox: Rect
     map_type: str
 
     def __init__(self):
@@ -22,27 +22,22 @@ class Window(QMainWindow):
         self.program_init()
 
     def program_init(self):
-        self.lo_la = 0, 0
-        self.z = 1
+        self.bbox = Rect(Vec(-80, -80), Vec(160, 160))
         self.map_type = 'map'
         self.update_ym()
 
     def update_ym(self):
-        show_map(self.ym_label, self.lo_la, self.z)
+        show_map(self.ym_label, self.bbox)
 
     def closeEvent(self, event):
         os.remove(YM_TMP_FILENAME)
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_PageUp:
-            self.z += 1
-            if self.z != 18:
-                self.update_ym()
-            else:
-                self.z = 17
-        if event.key() == Qt.Key_PageDown:
-            self.z -= 1
-            if self.z != -1:
-                self.update_ym()
-            else:
-                self.z = 0
+            pass  # Новый код для увеличения масштаба
+        elif event.key() == Qt.Key_PageDown:
+            pass  # Новый код для уменьшения масштаба
+        else:
+            return
+
+        self.update_ym()
