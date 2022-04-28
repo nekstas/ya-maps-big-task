@@ -4,15 +4,14 @@ import sys
 import requests
 from PyQt5.QtGui import QPixmap
 
-MAP_API_SERVER = 'http://static-maps.yandex.ru/1.x/'
-YM_TMP_FILENAME = 'ym-tmp.png'
+from core.constants import MAP_API_SERVER, YM_TMP_FILENAME, YM_IMG_SIZE
 
 
-def show_map(ym_label, lo_la, z=1, map_type='map'):
+def show_map(ym_label, bbox, map_type='map'):
     params = {
-        'll': ','.join(map(str, lo_la)),
-        'z': z,
-        'l': map_type
+        'bbox': bbox.to_ym(),
+        'l': map_type,
+        'size': YM_IMG_SIZE
     }
 
     response = requests.get(MAP_API_SERVER, params=params)
@@ -20,6 +19,7 @@ def show_map(ym_label, lo_la, z=1, map_type='map'):
     if not response:
         print('Произошла ошибка при получении карты.')
         print(f'{response.status_code}: {response.reason}')
+        print(response.text)
         sys.exit(1)
 
     with open(YM_TMP_FILENAME, 'wb') as o_file:

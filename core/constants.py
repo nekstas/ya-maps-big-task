@@ -4,6 +4,7 @@ from core.vec import Vec
 # Яндекс.Карты
 MAP_API_SERVER = 'https://static-maps.yandex.ru/1.x/'
 YM_TMP_FILENAME = 'ym-tmp.png'
+YM_IMG_SIZE = '600,450'
 
 # Магические константы для Яндекс.Карт
 MAGIC_DX = 600 / 229  # 2.6200873362445414
