@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 # nekstas-site
+from core.constants import MAGIC_DV
+
 
 class Rect:
     def __init__(self, pos, size):
@@ -27,4 +29,4 @@ class Rect:
                f'{coords[1].x},{coords[1].y}'
 
     def move(self, v):
-        self.pos += self.size * v
+        self.pos += self.size * v * MAGIC_DV
