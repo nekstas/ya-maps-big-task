@@ -7,20 +7,18 @@ class Rect:
         self.pos, self.size = pos, size
 
     def __itruediv__(self, k):
-        center = self.pos + self.size / 2
-        self.size /= k
-        self.pos = center - self.size / 2
-        return self
+        return Rect.from_center(self.center, self.size / k)
 
     def __imul__(self, k):
-        center = self.pos + self.size / 2
-        self.size *= k
-        self.pos = center - self.size / 2
-        return self
+        return Rect.from_center(self.center, self.size * k)
 
     @property
     def coords(self):
         return self.pos, self.pos + self.size
+
+    @property
+    def center(self):
+        return self.pos + self.size / 2
 
     def to_ym(self):
         coords = self.coords
