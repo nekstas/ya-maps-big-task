@@ -29,3 +29,7 @@ class Rect:
 
     def move(self, v):
         self.pos += self.size * v * MAGIC_DV
+
+    @staticmethod
+    def from_center(center, size):
+        return Rect(center - size / 2, size)

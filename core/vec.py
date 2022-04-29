@@ -22,12 +22,12 @@ class Vec:
         return self
 
     def __mul__(self, other):
-        if type(other) == int:
+        if type(other) != Vec:
             return Vec(self.x * other, self.y * other)
         return Vec(self.x * other.x, self.y * other.y)
 
     def __imul__(self, other):
-        if type(other) == int:
+        if type(other) != Vec:
             self.x, self.y = self.x * other, self.y * other
         else:
             self.x, self.y = self.x * other.x, self.y * other.y
