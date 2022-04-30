@@ -2,9 +2,10 @@
 import os
 
 from PyQt5 import uic
-from PyQt5.QtWidgets import QMainWindow, QLabel
+from PyQt5.QtWidgets import QMainWindow, QLabel, QVBoxLayout, QComboBox
 from PyQt5.QtCore import Qt
 
+from core.constants import MAP_LAYERS
 from core.rect import Rect
 from core.vec import Vec
 from ym.static_maps import show_map, YM_TMP_FILENAME
@@ -12,6 +13,8 @@ from ym.static_maps import show_map, YM_TMP_FILENAME
 
 class Window(QMainWindow):
     ym_label: QLabel
+    options_layout: QVBoxLayout
+    layer_input: QComboBox
 
     bbox: Rect
     map_type: str
@@ -22,12 +25,15 @@ class Window(QMainWindow):
         self.program_init()
 
     def program_init(self):
-        self.bbox = Rect(Vec(-80, -80), Vec(160, 160))
-        self.map_type = 'map'
+        self.options_layout.setAlignment(Qt.AlignTop)
+        self.layer_input.currentIndexChanged.connect(self.layer_changed)
+
+        self.bbox = Rect.from_center(Vec(), Vec(160, 160))
+        self.map_type = MAP_LAYERS[self.layer_input.currentIndex()]
         self.update_ym()
 
     def update_ym(self):
-        show_map(self.ym_label, self.bbox)
+        show_map(self.ym_label, self.bbox, self.map_type)
 
     def closeEvent(self, event):
         os.remove(YM_TMP_FILENAME)
@@ -75,3 +81,7 @@ class Window(QMainWindow):
             return False
 
         return True
+
+    def layer_changed(self, index):
+        self.map_type = MAP_LAYERS[index]
+        self.update_ym()
