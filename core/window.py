@@ -34,10 +34,28 @@ class Window(QMainWindow):
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_PageUp:
-            pass  # Новый код для увеличения масштаба
+            self.bbox /= 2
+            if not self.check_borders():
+                self.bbox *= 2
         elif event.key() == Qt.Key_PageDown:
-            pass  # Новый код для уменьшения масштаба
+            self.bbox *= 2
+            if not self.check_borders():
+                self.bbox /= 2
         else:
             return
 
         self.update_ym()
+
+    def check_borders(self):
+        if (self.bbox.pos.x < -180) or (self.bbox.pos.y < -80):
+            return False
+
+        if (self.bbox.pos.x + self.bbox.size.x > 180) or \
+                (self.bbox.pos.y + self.bbox.size.y > 90):
+            return False
+
+        if self.bbox.size.x < 160 / 2 ** 17 or \
+                self.bbox.size.y < 160 / 2 ** 17:
+            return False
+
+        return True
