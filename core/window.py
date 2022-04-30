@@ -52,4 +52,5 @@ class Window(QMainWindow):
         if (self.bbox.pos.x + self.bbox.size.x > 180) or \
                 (self.bbox.pos.y + self.bbox.size.y > 90):
             return False
+
         return True
