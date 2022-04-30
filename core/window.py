@@ -42,17 +42,21 @@ class Window(QMainWindow):
             if not self.check_borders():
                 self.bbox /= 2
         elif event.key() == Qt.Key_Left:
-            if self.check_borders():
-                self.bbox.move(Vec(-1, 0))
-        elif event.key() == Qt.Key_Right:
-            if self.check_borders():
+            self.bbox.move(Vec(-1, 0))
+            if not self.check_borders():
                 self.bbox.move(Vec(1, 0))
+        elif event.key() == Qt.Key_Right:
+            self.bbox.move(Vec(1, 0))
+            if not self.check_borders():
+                self.bbox.move(Vec(-1, 0))
         elif event.key() == Qt.Key_Up:
-            if self.check_borders():
-                self.bbox.move(Vec(0, 1))
-        elif event.key() == Qt.Key_Down:
-            if self.check_borders():
+            self.bbox.move(Vec(0, 1))
+            if not self.check_borders():
                 self.bbox.move(Vec(0, -1))
+        elif event.key() == Qt.Key_Down:
+            self.bbox.move(Vec(0, -1))
+            if not self.check_borders():
+                self.bbox.move(Vec(0, 1))
         else:
             return
 
