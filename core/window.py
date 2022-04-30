@@ -54,8 +54,8 @@ class Window(QMainWindow):
                 (self.bbox.pos.y + self.bbox.size.y > 90):
             return False
 
-        if self.bbox.size.x < 160 / 2 ** 15 or \
-                self.bbox.size.y < 160 / 2 ** 15:
+        if self.bbox.size.x < 160 / 2 ** 17 or \
+                self.bbox.size.y < 160 / 2 ** 17:
             return False
 
         return True
