@@ -32,6 +32,9 @@
     </property>
     <item>
      <widget class="QLabel" name="ym_label">
+      <property name="focusPolicy">
+       <enum>Qt::StrongFocus</enum>
+      </property>
       <property name="text">
        <string/>
       </property>
@@ -90,10 +93,23 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="address_input"/>
+       <widget class="QLineEdit" name="address_input">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QPushButton" name="find_button">
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
         <property name="text">
          <string>Искать</string>
         </property>

@@ -15,7 +15,7 @@ def show_map(ym_label, bbox, dot=None, map_type='map'):
     }
 
     if dot:
-        params['pt'] = dot
+        params['pt'] = f'{dot.x},{dot.y},pm2gnm'
 
     response = requests.get(MAP_API_SERVER, params=params)
 
