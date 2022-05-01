@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+from typing import Optional
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow, QLabel, QVBoxLayout, QComboBox
@@ -20,6 +21,7 @@ class Window(QMainWindow):
 
     bbox: Rect
     map_type: str
+    dot: Optional[str]
 
     def __init__(self):
         super().__init__()
@@ -30,6 +32,7 @@ class Window(QMainWindow):
         self.options_layout.setAlignment(Qt.AlignTop)
         self.layer_input.currentIndexChanged.connect(self.layer_changed)
         self.find_button.clicked.connect(self.find)
+        self.dot = None
 
         self.bbox = Rect.from_center(Vec(), Vec(160, 160))
         self.map_type = MAP_LAYERS[self.layer_input.currentIndex()]
@@ -91,7 +94,16 @@ class Window(QMainWindow):
 
     def find(self):
         toponym = get_toponym(self.address_input().text())
-        self.bbox.pos = get_toponym_lo_la(toponym)
+        coords = get_toponym_lo_la(toponym)
+        obj_size = get_toponym_spn(toponym)
         point = f"{coords[0]},{coords[1]}"
         color = 'pm2gnm'
         self.dot = f'{point},{color}'
+        self.update_ym()
+        self.bbox.change_center(coords)
+        while obj_size[0] < self.bbox.size.x or obj_size[1] < self.bbox.size.y:
+            self.bbox.size *= 2
+        while obj_size[0] > self.bbox.size.x or obj_size[1] > self.bbox.size.y:
+            self.bbox.size /= 2
+        while not self.check_borders():
+            self.bbox.size /= 2
