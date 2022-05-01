@@ -7,7 +7,7 @@ from PyQt5.QtGui import QPixmap
 from core.constants import MAP_API_SERVER, YM_TMP_FILENAME, YM_IMG_SIZE
 
 
-def show_map(ym_label, bbox, map_type='map'):
+def show_map(ym_label, bbox, dot, map_type='map'):
     params = {
         'bbox': bbox.to_ym(),
         'l': map_type,

@@ -41,7 +41,7 @@
      </widget>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="options_layout" stretch="0,0">
+     <layout class="QVBoxLayout" name="options_layout" stretch="0,0,0,0">
       <property name="spacing">
        <number>5</number>
       </property>
@@ -87,6 +87,16 @@
           <string>Гибрид</string>
          </property>
         </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="address_input"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="find_button">
+        <property name="text">
+         <string>Искать</string>
+        </property>
        </widget>
       </item>
      </layout>

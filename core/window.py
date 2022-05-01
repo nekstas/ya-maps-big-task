@@ -8,6 +8,8 @@ from PyQt5.QtCore import Qt
 from core.constants import MAP_LAYERS
 from core.rect import Rect
 from core.vec import Vec
+
+from ym.geocoder import get_toponym, get_toponym_spn, get_toponym_lo_la
 from ym.static_maps import show_map, YM_TMP_FILENAME
 
 
@@ -27,13 +29,14 @@ class Window(QMainWindow):
     def program_init(self):
         self.options_layout.setAlignment(Qt.AlignTop)
         self.layer_input.currentIndexChanged.connect(self.layer_changed)
+        self.find_button.clicked.connect(self.find)
 
         self.bbox = Rect.from_center(Vec(), Vec(160, 160))
         self.map_type = MAP_LAYERS[self.layer_input.currentIndex()]
         self.update_ym()
 
     def update_ym(self):
-        show_map(self.ym_label, self.bbox, self.map_type)
+        show_map(self.ym_label, self.bbox, self.dot, self.map_type)
 
     def closeEvent(self, event):
         os.remove(YM_TMP_FILENAME)
@@ -85,3 +88,10 @@ class Window(QMainWindow):
     def layer_changed(self, index):
         self.map_type = MAP_LAYERS[index]
         self.update_ym()
+
+    def find(self):
+        toponym = get_toponym(self.address_input().text())
+        self.bbox.pos = get_toponym_lo_la(toponym)
+        point = f"{coords[0]},{coords[1]}"
+        color = 'pm2gnm'
+        self.dot = f'{point},{color}'
