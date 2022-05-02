@@ -45,6 +45,15 @@ class Vec:
             self.x, self.y = self.x / other.x, self.y / other.y
         return self
 
+    def __repr__(self):
+        return f'Vec({round(self.x, 6)}, {round(self.y, 6)})'
+
+    def __str__(self):
+        return repr(self)
+
     @property
     def xy(self):
         return self.x, self.y
+
+    def to_ym(self):
+        return f'{round(self.x, 6)},{round(self.y, 6)}'
