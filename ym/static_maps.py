@@ -4,12 +4,14 @@ import sys
 import requests
 from PyQt5.QtGui import QPixmap
 
-from core.constants import MAP_API_SERVER, YM_TMP_FILENAME, YM_IMG_SIZE
+from core.constants import MAP_API_SERVER, YM_TMP_FILENAME, \
+    YM_IMG_SIZE
 
 
-def show_map(ym_label, bbox, dot=None, map_type='map'):
+def show_map(ym_label, z, lola, dot, map_type):
     params = {
-        'bbox': bbox.to_ym(),
+        'z': z,
+        'll': lola.to_ym(),
         'l': map_type,
         'size': YM_IMG_SIZE
     }
