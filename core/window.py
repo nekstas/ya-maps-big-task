@@ -4,7 +4,7 @@ from typing import Optional
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow, QLabel, QVBoxLayout, \
-    QComboBox, QPushButton, QLineEdit, QMessageBox
+    QComboBox, QLineEdit, QMessageBox, QTextEdit
 from PyQt5.QtCore import Qt
 
 from core.constants import MAP_LAYERS
@@ -20,6 +20,7 @@ class Window(QMainWindow):
     options_layout: QVBoxLayout
     layer_input: QComboBox
     address_input: QLineEdit
+    full_address: QTextEdit
 
     bbox: Rect
     map_type: str
@@ -119,9 +120,12 @@ class Window(QMainWindow):
         while not self.check_borders():
             self.bbox /= 2
 
+        address = toponym['metaDataProperty']['GeocoderMetaData']['Address']['formatted']
+        self.full_address.setText(address)
         self.update_ym()
 
     def delete_dot(self):
         self.dot = None
+        self.full_address.setText('')
 
         self.update_ym()
