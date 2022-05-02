@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
+from math import cos, radians
+
 from core.constants import MAGIC_DV
+from core.vec import Vec
 
 
 class Rect:
@@ -26,7 +29,7 @@ class Rect:
                f'{coords[1].x},{coords[1].y}'
 
     def move(self, v):
-        self.pos += self.size * v * MAGIC_DV
+        self.pos += self.size * v
 
     @staticmethod
     def from_center(center, size):

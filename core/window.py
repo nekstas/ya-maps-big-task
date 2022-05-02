@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QMainWindow, QLabel, QVBoxLayout, \
     QComboBox, QPushButton, QLineEdit, QMessageBox
 from PyQt5.QtCore import Qt
 
-from core.constants import MAP_LAYERS
+from core.constants import MAP_LAYERS, MAGIC_DV
 from core.rect import Rect
 from core.vec import Vec
 
@@ -37,7 +37,7 @@ class Window(QMainWindow):
         self.delete_button.clicked.connect(self.delete_dot)
         self.dot = None
 
-        self.bbox = Rect.from_center(Vec(), Vec(160, 160))
+        self.bbox = Rect.from_center(Vec(), Vec(80, 80) * MAGIC_DV)
         self.map_type = MAP_LAYERS[self.layer_input.currentIndex()]
         self.update_ym()
 
@@ -78,6 +78,7 @@ class Window(QMainWindow):
         self.update_ym()
 
     def check_borders(self):
+        # return True
         if (self.bbox.pos.x < -160) or (self.bbox.pos.y < -80):
             return False
 

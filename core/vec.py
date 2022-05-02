@@ -34,11 +34,15 @@ class Vec:
         return self
 
     def __truediv__(self, other):
-        return Vec(self.x / other, self.y / other)
+        if type(other) != Vec:
+            return Vec(self.x / other, self.y / other)
+        return Vec(self.x / other.x, self.y / other.y)
 
     def __itruediv__(self, other):
-        self.x /= other
-        self.y /= other
+        if type(other) != Vec:
+            self.x, self.y = self.x / other, self.y / other
+        else:
+            self.x, self.y = self.x / other.x, self.y / other.y
         return self
 
     @property
