@@ -44,7 +44,7 @@
      </widget>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="options_layout" stretch="0,0,0,0">
+     <layout class="QVBoxLayout" name="options_layout" stretch="0,0,0,0,0">
       <property name="spacing">
        <number>5</number>
       </property>
@@ -112,6 +112,13 @@
         </property>
         <property name="text">
          <string>Искать</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="delete_button">
+        <property name="text">
+         <string>Сброс</string>
         </property>
        </widget>
       </item>

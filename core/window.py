@@ -33,7 +33,8 @@ class Window(QMainWindow):
     def program_init(self):
         self.options_layout.setAlignment(Qt.AlignTop)
         self.layer_input.currentIndexChanged.connect(self.layer_changed)
-        self.find_button.clicked.connect(self.find)
+        self.find_button.clicked.connect(self.find_obj)
+        self.delete_button.clicked.connect(self.delete_dot)
         self.dot = None
 
         self.bbox = Rect.from_center(Vec(), Vec(160, 160))
@@ -94,7 +95,7 @@ class Window(QMainWindow):
         self.map_type = MAP_LAYERS[index]
         self.update_ym()
 
-    def find(self):
+    def find_obj(self):
         try:
             toponym = get_toponym(self.address_input.text())
         except IndexError:
@@ -117,5 +118,10 @@ class Window(QMainWindow):
             self.bbox *= 2
         while not self.check_borders():
             self.bbox /= 2
+
+        self.update_ym()
+
+    def delete_dot(self):
+        self.dot = None
 
         self.update_ym()
