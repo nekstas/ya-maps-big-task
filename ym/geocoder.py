@@ -50,6 +50,6 @@ def get_post_index(toponym):
     try:
         post_index = toponym['metaDataProperty']['GeocoderMetaData']['Address']['postal_code']
     except KeyError:
-        return ''
+        return '\nнет индекса'
 
     return post_index
