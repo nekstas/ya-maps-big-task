@@ -38,3 +38,18 @@ def get_toponym_spn(toponym):
     uc = [*map(float, corners["upperCorner"].split())]
 
     return Vec(uc[0] - lc[0], uc[1] - lc[1])
+
+
+def get_address(toponym):
+    address = toponym['metaDataProperty']['GeocoderMetaData']['Address']['formatted']
+
+    return address
+
+
+def get_post_index(toponym):
+    try:
+        post_index = toponym['metaDataProperty']['GeocoderMetaData']['Address']['postal_code']
+    except KeyError:
+        return ''
+
+    return post_index

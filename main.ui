@@ -50,7 +50,7 @@
      </widget>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="options_layout" stretch="0,0,0,0,0,0">
+     <layout class="QVBoxLayout" name="options_layout" stretch="0,0,0,0,0,0,0">
       <property name="spacing">
        <number>5</number>
       </property>
@@ -135,6 +135,19 @@
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="post_index">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Почтовый индекс</string>
         </property>
        </widget>
       </item>
