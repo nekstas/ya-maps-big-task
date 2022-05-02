@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 import os
+from typing import Optional
 
 from PyQt5 import uic
-from PyQt5.QtWidgets import QMainWindow, QLabel, QVBoxLayout, QComboBox
+from PyQt5.QtWidgets import QMainWindow, QLabel, QVBoxLayout, \
+    QComboBox, QPushButton, QLineEdit, QMessageBox
 from PyQt5.QtCore import Qt
 
 from core.constants import MAP_LAYERS
 from core.rect import Rect
 from core.vec import Vec
+
+from ym.geocoder import get_toponym, get_toponym_spn, get_toponym_lo_la
 from ym.static_maps import show_map, YM_TMP_FILENAME
 
 
@@ -15,9 +19,11 @@ class Window(QMainWindow):
     ym_label: QLabel
     options_layout: QVBoxLayout
     layer_input: QComboBox
+    address_input: QLineEdit
 
     bbox: Rect
     map_type: str
+    dot: Optional[Vec]
 
     def __init__(self):
         super().__init__()
@@ -27,13 +33,15 @@ class Window(QMainWindow):
     def program_init(self):
         self.options_layout.setAlignment(Qt.AlignTop)
         self.layer_input.currentIndexChanged.connect(self.layer_changed)
+        self.find_button.clicked.connect(self.find)
+        self.dot = None
 
         self.bbox = Rect.from_center(Vec(), Vec(160, 160))
         self.map_type = MAP_LAYERS[self.layer_input.currentIndex()]
         self.update_ym()
 
     def update_ym(self):
-        show_map(self.ym_label, self.bbox, self.map_type)
+        show_map(self.ym_label, self.bbox, self.dot, self.map_type)
 
     def closeEvent(self, event):
         os.remove(YM_TMP_FILENAME)
@@ -69,11 +77,11 @@ class Window(QMainWindow):
         self.update_ym()
 
     def check_borders(self):
-        if (self.bbox.pos.x < -180) or (self.bbox.pos.y < -80):
+        if (self.bbox.pos.x < -160) or (self.bbox.pos.y < -80):
             return False
 
-        if (self.bbox.pos.x + self.bbox.size.x > 180) or \
-                (self.bbox.pos.y + self.bbox.size.y > 90):
+        if (self.bbox.pos.x + self.bbox.size.x > 160) or \
+                (self.bbox.pos.y + self.bbox.size.y > 80):
             return False
 
         if self.bbox.size.x < 160 / 2 ** 17 or \
@@ -84,4 +92,30 @@ class Window(QMainWindow):
 
     def layer_changed(self, index):
         self.map_type = MAP_LAYERS[index]
+        self.update_ym()
+
+    def find(self):
+        try:
+            toponym = get_toponym(self.address_input.text())
+        except IndexError:
+            QMessageBox.critical(
+                self,
+                'Ошибка',
+                'Извините, но объект по данному запросу не найден'
+            )
+            return
+
+        coords = get_toponym_lo_la(toponym)
+        obj_size = get_toponym_spn(toponym)
+
+        self.dot = coords
+        self.bbox.change_center(coords)
+
+        while obj_size.x < self.bbox.size.x or obj_size.y < self.bbox.size.y:
+            self.bbox /= 2
+        while obj_size.x > self.bbox.size.x or obj_size.y > self.bbox.size.y:
+            self.bbox *= 2
+        while not self.check_borders():
+            self.bbox /= 2
+
         self.update_ym()

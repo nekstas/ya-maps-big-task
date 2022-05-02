@@ -31,3 +31,6 @@ class Rect:
     @staticmethod
     def from_center(center, size):
         return Rect(center - size / 2, size)
+
+    def change_center(self, center):
+        self.pos = center - self.size / 2
