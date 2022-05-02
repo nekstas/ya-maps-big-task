@@ -4,14 +4,15 @@ from typing import Optional
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow, QLabel, QVBoxLayout, \
-    QComboBox, QPushButton, QLineEdit, QMessageBox
+    QComboBox, QLineEdit, QMessageBox, QTextEdit, QCheckBox
 from PyQt5.QtCore import Qt
 
 from core.constants import MAP_LAYERS
 from core.rect import Rect
 from core.vec import Vec
 
-from ym.geocoder import get_toponym, get_toponym_spn, get_toponym_lo_la
+from ym.geocoder import get_toponym, get_toponym_spn, \
+    get_toponym_lo_la, get_address, get_post_index
 from ym.static_maps import show_map, YM_TMP_FILENAME
 
 
@@ -20,6 +21,8 @@ class Window(QMainWindow):
     options_layout: QVBoxLayout
     layer_input: QComboBox
     address_input: QLineEdit
+    full_address: QTextEdit
+    post_index: QCheckBox
 
     bbox: Rect
     map_type: str
@@ -35,13 +38,24 @@ class Window(QMainWindow):
         self.layer_input.currentIndexChanged.connect(self.layer_changed)
         self.find_button.clicked.connect(self.find_obj)
         self.delete_button.clicked.connect(self.delete_dot)
+        self.toponym = None
         self.dot = None
+        self.post_index.stateChanged.connect(self.check_index)
 
         self.bbox = Rect.from_center(Vec(), Vec(160, 160))
         self.map_type = MAP_LAYERS[self.layer_input.currentIndex()]
         self.update_ym()
 
     def update_ym(self):
+        if self.toponym:
+            address = get_address(self.toponym)
+            try:
+                if self.post_index.isChecked():
+                    address += f', {get_post_index(self.toponym)}'
+                self.full_address.setText(address)
+            except Exception as e:
+                print(e)
+
         show_map(self.ym_label, self.bbox, self.dot, self.map_type)
 
     def closeEvent(self, event):
@@ -97,7 +111,7 @@ class Window(QMainWindow):
 
     def find_obj(self):
         try:
-            toponym = get_toponym(self.address_input.text())
+            self.toponym = get_toponym(self.address_input.text())
         except IndexError:
             QMessageBox.critical(
                 self,
@@ -106,8 +120,8 @@ class Window(QMainWindow):
             )
             return
 
-        coords = get_toponym_lo_la(toponym)
-        obj_size = get_toponym_spn(toponym)
+        coords = get_toponym_lo_la(self.toponym)
+        obj_size = get_toponym_spn(self.toponym)
 
         self.dot = coords
         self.bbox.change_center(coords)
@@ -123,5 +137,11 @@ class Window(QMainWindow):
 
     def delete_dot(self):
         self.dot = None
+        self.toponym = None
+        self.full_address.setText('')
 
         self.update_ym()
+
+    def check_index(self):
+        if self.toponym:
+            self.update_ym()
