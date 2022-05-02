@@ -19,7 +19,6 @@ class Window(QMainWindow):
     ym_label: QLabel
     options_layout: QVBoxLayout
     layer_input: QComboBox
-    find_button: QPushButton
     address_input: QLineEdit
 
     bbox: Rect
@@ -49,13 +48,13 @@ class Window(QMainWindow):
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_PageUp:
-            self.bbox.size /= 2
+            self.bbox /= 2
             if not self.check_borders():
-                self.bbox.size *= 2
+                self.bbox *= 2
         elif event.key() == Qt.Key_PageDown:
-            self.bbox.size *= 2
+            self.bbox *= 2
             if not self.check_borders():
-                self.bbox.size /= 2
+                self.bbox /= 2
         elif event.key() == Qt.Key_Left:
             self.bbox.move(Vec(-1, 0))
             if not self.check_borders():
@@ -113,9 +112,9 @@ class Window(QMainWindow):
         self.bbox.change_center(coords)
 
         while obj_size.x < self.bbox.size.x or obj_size.y < self.bbox.size.y:
-            self.bbox *= 2
-        while obj_size.x > self.bbox.size.x or obj_size.y > self.bbox.size.y:
             self.bbox /= 2
+        while obj_size.x > self.bbox.size.x or obj_size.y > self.bbox.size.y:
+            self.bbox *= 2
         while not self.check_borders():
             self.bbox /= 2
 
