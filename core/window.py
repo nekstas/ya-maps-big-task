@@ -44,13 +44,17 @@ class Window(QMainWindow):
         self.layer_input.currentIndexChanged.connect(self.layer_changed)
         self.find_button.clicked.connect(self.find_obj)
         self.delete_button.clicked.connect(self.delete_search_results)
-        self.toponym = None
-        self.dot = None
         self.post_index.stateChanged.connect(self.check_index)
+
         self.z = 0
         self.lola = Vec(0, 0)
+
         self.dot = None
+        self.toponym = None
+        self.org = None
+
         self.map_type = MAP_LAYERS[self.layer_input.currentIndex()]
+
         self.update_ym()
 
     def update_ym(self):
@@ -61,6 +65,12 @@ class Window(QMainWindow):
             if self.post_index.isChecked():
                 address += f', {get_post_index(self.toponym)}'
             self.full_address.setText(address)
+
+        if self.org:
+            name = get_org_name(self.org)
+            address = get_org_address(self.org)
+            # Индекса по документации тут нет
+            self.full_address.setText(f'{name}, {address}')
 
     def closeEvent(self, event):
         os.remove(YM_TMP_FILENAME)
