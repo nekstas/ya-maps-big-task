@@ -13,3 +13,4 @@ YM_IMG_SIZE_V = Vec(600, 450)
 MAP_LAYERS = ('map', 'sat', 'sat,skl')
 
 GEOCODER_APIKEY = "40d1649f-0493-4b70-98ba-98533de7710b"
+SEARCH_MAPS_APIKEY = 'dda3ddba-c9ea-4ead-9010-f43fbc15c6e3'
