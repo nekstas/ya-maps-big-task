@@ -35,3 +35,7 @@ def search_org(lo_la, text):
 
 def get_org_lo_la(org):
     return Vec(*org['geometry']['coordinates'])
+
+
+def get_org_name(org):
+    return org['properties']['CompanyMetaData']['name']
