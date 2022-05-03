@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-from typing import Optional
+from typing import Optional, Dict
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow, QLabel, QVBoxLayout, \
@@ -28,6 +28,7 @@ class Window(QMainWindow):
     lola: Vec
     map_type: str
     dot: Optional[Vec]
+    toponym: Optional[Dict]
 
     def __init__(self):
         super().__init__()
@@ -38,7 +39,7 @@ class Window(QMainWindow):
         self.options_layout.setAlignment(Qt.AlignTop)
         self.layer_input.currentIndexChanged.connect(self.layer_changed)
         self.find_button.clicked.connect(self.find_obj)
-        self.delete_button.clicked.connect(self.delete_dot)
+        self.delete_button.clicked.connect(self.delete_search_results)
         self.toponym = None
         self.dot = None
         self.post_index.stateChanged.connect(self.check_index)
@@ -59,8 +60,6 @@ class Window(QMainWindow):
                 self.full_address.setText(address)
             except Exception as e:
                 print(e)
-
-        show_map(self.ym_label, self.bbox, self.dot, self.map_type)
 
     def closeEvent(self, event):
         os.remove(YM_TMP_FILENAME)
@@ -120,21 +119,25 @@ class Window(QMainWindow):
             ym_spn.y > obj_size.y
         ))
 
-    def find_obj(self):
+    def search_toponym(self, search_text):
+        self.delete_search_results()
         try:
-            self.toponym = get_toponym(self.address_input.text())
+            self.toponym = get_toponym(search_text)
+            return True
         except IndexError:
             QMessageBox.critical(
-                self,
-                'Ошибка',
+                self, 'Ошибка',
                 'Извините, но объект по данному запросу не найден'
             )
+            return False
+
+    def find_obj(self):
+        if not self.search_toponym(self.address_input.text()):
             return
 
         coords = get_toponym_lo_la(self.toponym)
         obj_size = get_toponym_spn(self.toponym)
-
-        self.dot = self.lola = coords
+        self.lola = self.dot = coords
 
         while self.compare_spn(obj_size, 1):
             self.z += 1
@@ -143,7 +146,7 @@ class Window(QMainWindow):
 
         self.update_ym()
 
-    def delete_dot(self):
+    def delete_search_results(self):
         self.dot = None
         self.toponym = None
         self.full_address.setText('')
@@ -153,3 +156,29 @@ class Window(QMainWindow):
     def check_index(self):
         if self.toponym:
             self.update_ym()
+
+    def mousePressEvent(self, event):
+        old_lola = self.lola
+
+        x, y = event.x() - 5, event.y() - 5
+        y -= (self.size().height() - YM_IMG_SIZE_V.y - 10) / 2
+
+        if not (0 <= x <= YM_IMG_SIZE_V.x and 0 <= y <= YM_IMG_SIZE_V.y):
+            return
+
+        x -= YM_IMG_SIZE_V.x / 2
+        y -= YM_IMG_SIZE_V.y / 2
+
+        cx, cy = lola_to_xy(self.z, *self.lola.xy)
+        px, py = cx + x, cy + y
+        p_lola = Vec(*xy_to_lola(self.z, px, py))
+        self.lola = p_lola
+
+        if not self.check_borders():
+            self.lola = old_lola
+            return
+        self.lola = old_lola
+
+        self.search_toponym(p_lola.to_ym())
+        self.dot = p_lola
+        self.update_ym()
