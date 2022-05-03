@@ -209,10 +209,8 @@ class Window(QMainWindow):
         self.delete_search_results()
         self.org = search_org(lo_la, search_text)
 
-        if self.org is None:
-            return False
-
-        if lo_la_distance(lo_la, get_org_lo_la(self.org)) > 50:
+        if self.org is None or \
+                lo_la_distance(lo_la, get_org_lo_la(self.org)) > 50:
             self.org = None
             return False
 
