@@ -10,9 +10,12 @@ from PyQt5.QtCore import Qt
 from core.constants import MAP_LAYERS, YM_IMG_SIZE_V
 from core.magic import lola_to_xy, xy_to_lola, lola_to_spn
 from core.vec import Vec
+from ym.geo_math import lo_la_distance
 
 from ym.geocoder import get_toponym, get_toponym_spn, \
     get_toponym_lo_la, get_address, get_post_index
+from ym.search_maps import search_org, get_org_lo_la, \
+    get_org_name, get_org_address
 from ym.static_maps import show_map, YM_TMP_FILENAME
 
 
@@ -29,6 +32,7 @@ class Window(QMainWindow):
     map_type: str
     dot: Optional[Vec]
     toponym: Optional[Dict]
+    org: Optional[Dict]
 
     def __init__(self):
         super().__init__()
@@ -54,12 +58,9 @@ class Window(QMainWindow):
 
         if self.toponym:
             address = get_address(self.toponym)
-            try:
-                if self.post_index.isChecked():
-                    address += f', {get_post_index(self.toponym)}'
-                self.full_address.setText(address)
-            except Exception as e:
-                print(e)
+            if self.post_index.isChecked():
+                address += f', {get_post_index(self.toponym)}'
+            self.full_address.setText(address)
 
     def closeEvent(self, event):
         os.remove(YM_TMP_FILENAME)
@@ -149,6 +150,7 @@ class Window(QMainWindow):
     def delete_search_results(self):
         self.dot = None
         self.toponym = None
+        self.org = None
         self.full_address.setText('')
 
         self.update_ym()
@@ -158,9 +160,6 @@ class Window(QMainWindow):
             self.update_ym()
 
     def mousePressEvent(self, event):
-        if event.button() != Qt.LeftButton:
-            return  # пока что
-
         old_lola = self.lola
 
         x, y = event.x() - 5, event.y() - 5
@@ -182,6 +181,29 @@ class Window(QMainWindow):
             return
         self.lola = old_lola
 
-        self.search_toponym(p_lola.to_ym())
-        self.dot = p_lola
-        self.update_ym()
+        if event.button() == Qt.LeftButton:
+            if not self.search_toponym(p_lola.to_ym()):
+                return
+            self.dot = p_lola
+            self.update_ym()
+        elif event.button() == Qt.RightButton:
+            if not self.search_org(p_lola, self.address_input.text()):
+                return
+            self.dot = get_org_lo_la(self.org)
+            self.update_ym()
+
+    def search_org(self, lo_la, search_text):
+        if not search_text.strip():
+            return False
+
+        self.delete_search_results()
+        self.org = search_org(lo_la, search_text)
+
+        if self.org is None:
+            return False
+
+        if lo_la_distance(lo_la, get_org_lo_la(self.org)) > 50:
+            self.org = None
+            return False
+
+        return True
