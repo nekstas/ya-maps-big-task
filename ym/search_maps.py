@@ -5,15 +5,16 @@ import sys
 import requests
 
 from core.constants import SEARCH_MAPS_APIKEY, SEARCH_API_SERVER
+from core.vec import Vec
 
 
-def search_org(text, lo_la):
+def search_org(lo_la, text):
     params = {
         'apikey': SEARCH_MAPS_APIKEY,
-        'text': text,
         'lang': 'ru_RU',
+        'type': 'biz',
         'll': lo_la.to_ym(),
-        'type': 'biz'
+        'text': text
     }
 
     response = requests.get(SEARCH_API_SERVER, params=params)
@@ -21,6 +22,7 @@ def search_org(text, lo_la):
     if not response:
         print('Произошла ошибка при выполнении поиска.')
         print(f'{response.status_code}: {response.reason}')
+        print(response.text)
         sys.exit()
 
     json_response = response.json()
@@ -29,3 +31,7 @@ def search_org(text, lo_la):
         return json_response['features'][0]
     except IndexError:
         return
+
+
+def get_org_lo_la(org):
+    return Vec(*org['geometry']['coordinates'])
