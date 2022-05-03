@@ -70,7 +70,7 @@ class Window(QMainWindow):
             name = get_org_name(self.org)
             address = get_org_address(self.org)
             # Индекса по документации тут нет
-            self.full_address.setText(f'{name}, {address}')
+            self.full_address.setText(f'{name} - {address}')
 
     def closeEvent(self, event):
         os.remove(YM_TMP_FILENAME)
