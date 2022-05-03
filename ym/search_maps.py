@@ -39,3 +39,9 @@ def get_org_lo_la(org):
 
 def get_org_name(org):
     return org['properties']['CompanyMetaData']['name']
+
+
+def get_org_address(org):
+    return org['properties']['CompanyMetaData'].get(
+        'address', 'нет адреса'
+    )
