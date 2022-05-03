@@ -9,6 +9,8 @@ Z = 32
 
 
 def lola_to_xy(z, long, lat):
+    """ Магия для превращения географических координат
+        в пиксельные координаты """
     b = pi * lat / 180
     phi = (1 - e * sin(b)) / (1 + e * sin(b))
     te = tan(pi / 4 + b / 2) * phi ** (e / 2)
@@ -21,6 +23,8 @@ def lola_to_xy(z, long, lat):
 
 
 def xy_to_lola(z, x, y):
+    """ Магия для превращения пиксельных координат
+        в географические координаты """
     bl, br = -180, 180
     for i in range(Z + z):
         m = (bl + br) / 2
@@ -47,6 +51,7 @@ def xy_to_lola(z, x, y):
 
 
 def lola_to_spn(z, long, lat):
+    """ Магия для определения размера видимой области """
     x, y = lola_to_xy(z, long, lat)
     return Vec(*xy_to_lola(
         z,

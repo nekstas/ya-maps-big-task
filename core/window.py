@@ -30,6 +30,7 @@ class Window(QMainWindow):
     z: int
     lola: Vec
     map_type: str
+
     dot: Optional[Vec]
     toponym: Optional[Dict]
     org: Optional[Dict]
