@@ -7,7 +7,7 @@ import requests
 from core.constants import SEARCH_MAPS_APIKEY, SEARCH_API_SERVER
 
 
-def search(text, lo_la):
+def search_org(text, lo_la):
     params = {
         'apikey': SEARCH_MAPS_APIKEY,
         'text': text,
