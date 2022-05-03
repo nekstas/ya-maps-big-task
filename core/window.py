@@ -158,6 +158,9 @@ class Window(QMainWindow):
             self.update_ym()
 
     def mousePressEvent(self, event):
+        if event.button() != Qt.LeftButton:
+            return  # пока что
+
         old_lola = self.lola
 
         x, y = event.x() - 5, event.y() - 5
